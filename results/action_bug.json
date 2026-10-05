@@ -1,0 +1,22 @@
+{
+ "stacks_5": {
+  "n_windows": 212920,
+  "slots_total": 851680,
+  "slots_differ": 14628,
+  "frac_slots_differ": 0.017175464963366523,
+  "frac_windows_affected": 0.027968250986285928,
+  "slots_with_foreign_action": 7884,
+  "frac_slots_foreign": 0.00925699793349615,
+  "frac_windows_with_foreign_action": 0.014822468532782266
+ },
+ "stacks_50": {
+  "n_windows": 212920,
+  "slots_total": 10433080,
+  "slots_differ": 1462830,
+  "frac_slots_differ": 0.14021075272115233,
+  "frac_windows_affected": 0.2969096374225061,
+  "slots_with_foreign_action": 874771,
+  "frac_slots_foreign": 0.08384590168962569,
+  "frac_windows_with_foreign_action": 0.1706509487131317
+ }
+}

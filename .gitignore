@@ -1,0 +1,7 @@
+__pycache__/
+.pytest_cache/
+results/frames.npz
+results/points22.npy
+*.npz
+*.npy
+.ruff_cache/

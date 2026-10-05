@@ -1,0 +1,254 @@
+{
+ "n_windows": {
+  "value": 545059,
+  "text": "545,059"
+ },
+ "n_test": {
+  "value": 54507,
+  "text": "54,507"
+ },
+ "twin4": {
+  "value": 0.9596198653383969,
+  "text": "96"
+ },
+ "twin4_iden": {
+  "value": 0.9596198653383969,
+  "text": "96"
+ },
+ "tn_kp": {
+  "value": 3.278181791305542,
+  "text": "3.3"
+ },
+ "tn_id": {
+  "value": 0.9999816537325481,
+  "text": "100"
+ },
+ "pub_kp_best": {
+  "value": 13.12,
+  "text": "13.12"
+ },
+ "pub_id_best": {
+  "value": 95.88,
+  "text": "95.88"
+ },
+ "pub_pm": {
+  "value": 0.9588,
+  "text": "95.9"
+ },
+ "kp_mlp_off": {
+  "value": 16.855823516845703,
+  "text": "16.9"
+ },
+ "kp_mlp_out_min": {
+  "value": 16.91680908203125,
+  "text": "16.9"
+ },
+ "kp_mlp_out_max": {
+  "value": 20.017290115356445,
+  "text": "20.0"
+ },
+ "kp_rise_max": {
+  "value": 0.18755930823262212,
+  "text": "19"
+ },
+ "pm_off_min": {
+  "value": 0.9102500596253692,
+  "text": "91.0"
+ },
+ "pm_off_max": {
+  "value": 0.9118828774285872,
+  "text": "91.2"
+ },
+ "pm_r5_min": {
+  "value": 0.9432180090916514,
+  "text": "94.3"
+ },
+ "pm_r5_max": {
+  "value": 0.9462939271034652,
+  "text": "94.6"
+ },
+ "pm_sm_min": {
+  "value": 0.9329830960611917,
+  "text": "93.3"
+ },
+ "pm_sm_max": {
+  "value": 0.9360862345863843,
+  "text": "93.6"
+ },
+ "pm_run_min": {
+  "value": 0.37061646126534076,
+  "text": "37.1"
+ },
+ "pm_run_max": {
+  "value": 0.3918941518511848,
+  "text": "39.2"
+ },
+ "pm_subj_min": {
+  "value": 0.0033707865168539327,
+  "text": "0.3"
+ },
+ "pm_subj_max": {
+  "value": 0.5889148115744791,
+  "text": "59"
+ },
+ "pm_per_run": {
+  "value": {
+   "0": 0.46800115949497556,
+   "1": 0.5889148115744791,
+   "2": 0.0033707865168539327,
+   "3": 0.27545893719806763,
+   "4": 0.5711279058643453
+  },
+  "text": "47, 59, 0, 28, 57"
+ },
+ "pn_off_min": {
+  "value": 0.8153448180967582,
+  "text": "81.5"
+ },
+ "pn_off_max": {
+  "value": 0.8480745592309245,
+  "text": "84.8"
+ },
+ "pn_r5_min": {
+  "value": 0.621580423006778,
+  "text": "62.2"
+ },
+ "pn_r5_max": {
+  "value": 0.82951792470806,
+  "text": "83.0"
+ },
+ "pn_sm_min": {
+  "value": 0.8730163050875139,
+  "text": "87.3"
+ },
+ "pn_sm_max": {
+  "value": 0.8799847565125078,
+  "text": "88.0"
+ },
+ "pn_run_min": {
+  "value": 0.2936166928242468,
+  "text": "29.4"
+ },
+ "pn_run_max": {
+  "value": 0.31104793269354464,
+  "text": "31.1"
+ },
+ "pn_subj_min": {
+  "value": 0.0018512573568753344,
+  "text": "0.2"
+ },
+ "pn_subj_max": {
+  "value": 0.7218171802598748,
+  "text": "72"
+ },
+ "pn_per_run": {
+  "value": {
+   "0": 0.2590290303186464,
+   "1": 0.7218171802598748,
+   "2": 0.0018512573568753344,
+   "3": 0.303317230273752,
+   "4": 0.23979293557405104
+  },
+  "text": "26, 72, 0, 30, 24"
+ },
+ "p2_max": {
+  "value": 0.004109149277688603,
+  "text": "0.4"
+ },
+ "pn_sm_s0": {
+  "value": 0.8744862128099736,
+  "text": "87.4"
+ },
+ "pm_r5_int": {
+  "value": 0.9447559680975584,
+  "text": "94"
+ },
+ "pm_run_int": {
+  "value": 0.3812553065582628,
+  "text": "38"
+ },
+ "act_1nn_shuf": {
+  "value": 0.9944580123990231,
+  "text": "99.4"
+ },
+ "act_tn_shuf": {
+  "value": 0.9956791283111027,
+  "text": "99.6"
+ },
+ "act_1nn_off": {
+  "value": 0.04889160247980462,
+  "text": "4.9"
+ },
+ "act_chance": {
+  "value": 0.02040816326530612,
+  "text": "2.0"
+ },
+ "act_1nn_shuf_int": {
+  "value": 0.9944580123990231,
+  "text": "99"
+ },
+ "mak_n_test": {
+  "value": 578,
+  "text": "578"
+ },
+ "mak_tn": {
+  "value": 0.8581314878892734,
+  "text": "85.8"
+ },
+ "mak_1nn": {
+  "value": 0.2975778546712803,
+  "text": "29.8"
+ },
+ "mak_same_run": {
+  "value": 1.0,
+  "text": "100"
+ },
+ "bug5_windows": {
+  "value": 0.027968250986285928,
+  "text": "2.8"
+ },
+ "bug5_foreign": {
+  "value": 0.014822468532782266,
+  "text": "1.5"
+ },
+ "bug50_windows": {
+  "value": 0.2969096374225061,
+  "text": "29.7"
+ },
+ "bug50_foreign": {
+  "value": 0.1706509487131317,
+  "text": "17.1"
+ },
+ "lab_frac": {
+  "value": 0.3906366099816717,
+  "text": "39"
+ },
+ "cov_min": {
+  "value": 20,
+  "text": "20"
+ },
+ "cov_max": {
+  "value": 49,
+  "text": "49"
+ },
+ "held_min": {
+  "value": 48,
+  "text": "48"
+ },
+ "held_max": {
+  "value": 49,
+  "text": "49"
+ },
+ "held_missing": {
+  "value": 2,
+  "text": "two"
+ },
+ "table1": {
+  "value": null,
+  "text": "| Split | Test data | PointMLP (authors' model) | PointNet | Chance |\n|---|---|---|---|---|\n| Released (shuffled windows) | random windows, 11 participants | 91.2, 91.0 | 81.5, 84.8, 83.4 | 9.1 |\n| Random windows, 5 participants | random windows | 94.3, 94.6 | 62.2, 82.3, 83.0 | 20.0 |\n| Random windows, 5 participants, smaller training set | random windows | 93.3, 93.6 | 87.4, 87.3, 88.0 | 20.0 |\n| Held-out run, 5 participants | one whole run per participant | 37.1, 39.2 | 29.4, 31.1, 30.8 | 20.0 |"
+ },
+ "table2": {
+  "value": null,
+  "text": "| Task | Split | Nearest training window in time | 1-NN on window features | Perceptron on window features |\n|---|---|---|---|---|\n| Keypoints (MLE, cm) | released (shuffled windows) | 3.3 | 23.6 | 16.9 |\n| Keypoints (MLE, cm) | participants 9, 10 out | 17.8 | 26.6 | 20.0 |\n| Keypoints (MLE, cm) | participants 3, 5 out | 22.9 | 24.1 | 16.9 |\n| Keypoints (MLE, cm) | participants 0, 8 out | 26.7 | 25.3 | 17.7 |\n| Actions (accuracy, %) | released (contiguous), 50 frames | none within 5,000 windows | 4.9 | n/a |\n| Actions (accuracy, %) | 50 frames, shuffled, 8:1:1 | 99.6 | 99.4 | n/a |\n| Actions (accuracy, %) | MAK-GCN code (one-action windows, shuffled) | 85.8 | 29.8 | n/a |"
+ }
+}

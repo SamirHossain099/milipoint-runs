@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use milipoint-runs, please cite it as below."
+title: "milipoint-runs: run-disjoint evaluation of the MiliPoint millimeter-wave radar dataset"
+abstract: >-
+  The released identification and keypoint splits of the MiliPoint radar dataset shuffle overlapping windows before
+  dividing them, so most test windows share frames with training windows. Five participants recorded the workout in
+  several runs; with one run held out, identification accuracy of the dataset authors' PointMLP on them falls from
+  about 94% to 37-39%. milipoint-runs rebuilds the released splits exactly, measures the overlap, runs no-learning baselines and
+  two networks under released, run-disjoint and participant-disjoint splits, and pins every reported number with
+  tests.
+type: software
+authors:
+  - given-names: Samir
+    family-names: Hossain
+    orcid: "https://orcid.org/0009-0003-8986-0946"
+    affiliation: "Department of Electrical and Computer Engineering, Texas Tech University"
+version: 0.1.0
+license: MIT
+repository-code: "https://github.com/SamirHossain099/milipoint-runs"
+keywords:
+  - mmWave radar
+  - point clouds
+  - person identification
+  - human activity recognition
+  - evaluation protocol
+  - data leakage
