@@ -1,5 +1,7 @@
 # milipoint-runs
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23149604.svg)](https://doi.org/10.5281/zenodo.23149604)
+
 Run-disjoint evaluation of the MiliPoint millimeter-wave radar dataset (Cui et al., NeurIPS 2023 Datasets and
 Benchmarks): what its released splits reward, and protocols that measure what the tasks ask.
 

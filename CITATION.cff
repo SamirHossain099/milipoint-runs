@@ -15,6 +15,7 @@ authors:
     orcid: "https://orcid.org/0009-0003-8986-0946"
     affiliation: "Department of Electrical and Computer Engineering, Texas Tech University"
 version: 0.1.0
+doi: "10.5281/zenodo.23149604"
 license: MIT
 repository-code: "https://github.com/SamirHossain099/milipoint-runs"
 keywords:
