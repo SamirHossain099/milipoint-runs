@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+from scipy import stats
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "scripts"))
 from pointnet_iden import MULTI  # noqa: E402
@@ -29,6 +30,17 @@ def pointmlp():
     return {k: a[k] + b[k] for k in a if isinstance(a[k], list)} | {"published_pointmlp_iden": a["published_pointmlp_iden"]}
 
 
+def pointnet():
+    """The PointNet runs, five seeds."""
+    return j("pointnet_iden.json")
+
+
+def fmt_list(vals):
+    """Per-run values as printed: whole percent, one decimal below 1%, 'and' before the last."""
+    t = [pct(v, 1) if v < 0.01 else pct(v, 0) for v in vals]
+    return ", ".join(t[:-1]) + " and " + t[-1]
+
+
 def per_run(res):
     """Accuracy per held-out run (participant), mean over seeds."""
     subj = res["sessions_out_per_subject"]
@@ -36,7 +48,8 @@ def per_run(res):
 
 
 def main():
-    g, pn, pm = j("gate.json"), j("pointnet_iden.json"), pointmlp()
+    g, pn, pm = j("gate.json"), pointnet(), pointmlp()
+    rel_run, rel_sm = j("pointmlp_released_s0_sessions_out.json"), j("pointmlp_released_s0_random_same5_sizematched.json")
     ao, bug = j("action_oracle.json"), j("action_bug.json")
     N = {}
 
@@ -73,11 +86,31 @@ def main():
         pr = per_run(r)
         put(f"{m}_subj_min", min(pr.values()), pct(min(pr.values())))
         put(f"{m}_subj_max", max(pr.values()), pct(max(pr.values()), 0))
-        put(f"{m}_per_run", pr, ", ".join(pct(v, 0) for v in pr.values()))
+        vals = [pr[str(k)] for k in range(5)]
+        put(f"{m}_per_run", pr, fmt_list(vals))
+        mean, h = float(np.mean(vals)), float(stats.t.ppf(0.975, 4) * np.std(vals, ddof=1) / np.sqrt(5))
+        put(f"{m}_run_mean", mean, pct(mean, 0))
+        put(f"{m}_run_lo", max(mean - h, 0.0), pct(max(mean - h, 0.0), 0))
+        put(f"{m}_run_hi", mean + h, pct(mean + h, 0))
+    gaps = [float(np.mean(r["random_same5_sizematched"])) - max(per_run(r).values()) for r in (pm, pn)]
+    put("gap_min", min(gaps), pct(min(gaps), 0))
+    put("pm_gap_pub", pm["published_pointmlp_iden"] / 100 - min(pm["official"]),
+        pct(pm["published_pointmlp_iden"] / 100 - min(pm["official"]), 0))
+    put("pm_drop", float(np.mean(pm["random_same5_sizematched"]) - np.mean(pm["sessions_out"])),
+        pct(np.mean(pm["random_same5_sizematched"]) - np.mean(pm["sessions_out"]), 0))
+    put("pmrel_run", rel_run["acc"], pct(rel_run["acc"]))
+    put("pmrel_sm", rel_sm["acc"], pct(rel_sm["acc"]))
+    run_traj = list(rel_run["trace"].values()) + [rel_run["acc"]]
+    put("pmrel_run_lo", min(run_traj), pct(min(run_traj), 0))
+    put("pmrel_run_hi", max(run_traj), pct(max(run_traj), 0))
+    first = rel_sm["trace"][min(rel_sm["trace"], key=int)]
+    put("pmrel_sm_first", first, pct(first))
+    spread = max(max(pn[k]) - min(pn[k]) for k in ("official", "random_same5", "random_same5_sizematched", "sessions_out"))
+    put("pn_spread", spread, pct(spread))
+    assert max(pn["sessions_out"]) < min(pn["random_same5"]) and max(pm["sessions_out"]) < min(pm["random_same5"])
     p2 = sorted(MULTI).index(2)                           # label of participant 2 among the five
     p2_all = [d[str(p2)] for r in (pm, pn) for d in r["sessions_out_per_subject"]]
     put("p2_max", max(p2_all), pct(max(p2_all)))
-    put("pn_sm_s0", pn["random_same5_sizematched"][0], pct(pn["random_same5_sizematched"][0]))
     put("pm_r5_int", float(np.mean(pm["random_same5"])), pct(np.mean(pm["random_same5"]), 0))
     put("pm_run_int", float(np.mean(pm["sessions_out"])), pct(np.mean(pm["sessions_out"]), 0))
 

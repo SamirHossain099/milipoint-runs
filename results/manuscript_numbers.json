@@ -99,65 +99,121 @@
    "3": 0.27545893719806763,
    "4": 0.5711279058643453
   },
-  "text": "47, 59, 0, 28, 57"
+  "text": "47, 59, 0.3, 28 and 57"
+ },
+ "pm_run_mean": {
+  "value": 0.38137472012974427,
+  "text": "38"
+ },
+ "pm_run_lo": {
+  "value": 0.07679449837574515,
+  "text": "8"
+ },
+ "pm_run_hi": {
+  "value": 0.6859549418837434,
+  "text": "69"
  },
  "pn_off_min": {
-  "value": 0.8153448180967582,
-  "text": "81.5"
+  "value": 0.8519456216632726,
+  "text": "85.2"
  },
  "pn_off_max": {
-  "value": 0.8480745592309245,
-  "text": "84.8"
+  "value": 0.868750802649201,
+  "text": "86.9"
  },
  "pn_r5_min": {
-  "value": 0.621580423006778,
-  "text": "62.2"
+  "value": 0.8857827258622097,
+  "text": "88.6"
  },
  "pn_r5_max": {
-  "value": 0.82951792470806,
-  "text": "83.0"
+  "value": 0.9089473827476386,
+  "text": "90.9"
  },
  "pn_sm_min": {
-  "value": 0.8730163050875139,
-  "text": "87.3"
+  "value": 0.8994746440917876,
+  "text": "89.9"
  },
  "pn_sm_max": {
-  "value": 0.8799847565125078,
-  "text": "88.0"
+  "value": 0.9074502545118001,
+  "text": "90.7"
  },
  "pn_run_min": {
-  "value": 0.2936166928242468,
-  "text": "29.4"
+  "value": 0.28462448864074924,
+  "text": "28.5"
  },
  "pn_run_max": {
-  "value": 0.31104793269354464,
-  "text": "31.1"
+  "value": 0.31151105050557026,
+  "text": "31.2"
  },
  "pn_subj_min": {
-  "value": 0.0018512573568753344,
+  "value": 0.0015216693418940608,
   "text": "0.2"
  },
  "pn_subj_max": {
-  "value": 0.7218171802598748,
-  "text": "72"
+  "value": 0.747111240724539,
+  "text": "75"
  },
  "pn_per_run": {
   "value": {
-   "0": 0.2590290303186464,
-   "1": 0.7218171802598748,
-   "2": 0.0018512573568753344,
-   "3": 0.303317230273752,
-   "4": 0.23979293557405104
+   "0": 0.2173344498840505,
+   "1": 0.747111240724539,
+   "2": 0.0015216693418940608,
+   "3": 0.29202576489533005,
+   "4": 0.232239548454989
   },
-  "text": "26, 72, 0, 30, 24"
+  "text": "22, 75, 0.2, 29 and 23"
+ },
+ "pn_run_mean": {
+  "value": 0.2980465346601605,
+  "text": "30"
+ },
+ "pn_run_lo": {
+  "value": 0.0,
+  "text": "0"
+ },
+ "pn_run_hi": {
+  "value": 0.6383549908499209,
+  "text": "64"
+ },
+ "gap_min": {
+  "value": 0.15741008654769328,
+  "text": "16"
+ },
+ "pm_gap_pub": {
+  "value": 0.048549940374630784,
+  "text": "5"
+ },
+ "pm_drop": {
+  "value": 0.5532793587655253,
+  "text": "55"
+ },
+ "pmrel_run": {
+  "value": 0.3053554429207297,
+  "text": "30.5"
+ },
+ "pmrel_sm": {
+  "value": 0.9238097830525084,
+  "text": "92.4"
+ },
+ "pmrel_run_lo": {
+  "value": 0.25598837059716467,
+  "text": "26"
+ },
+ "pmrel_run_hi": {
+  "value": 0.31481719710808653,
+  "text": "31"
+ },
+ "pmrel_sm_first": {
+  "value": 0.8066799139831777,
+  "text": "80.7"
+ },
+ "pn_spread": {
+  "value": 0.026886561864821024,
+  "text": "2.7"
  },
  "p2_max": {
   "value": 0.004109149277688603,
   "text": "0.4"
- },
- "pn_sm_s0": {
-  "value": 0.8744862128099736,
-  "text": "87.4"
  },
  "pm_r5_int": {
   "value": 0.9447559680975584,
@@ -245,7 +301,7 @@
  },
  "table1": {
   "value": null,
-  "text": "| Split | Test data | PointMLP (authors' model) | PointNet | Chance |\n|---|---|---|---|---|\n| Released (shuffled windows) | random windows, 11 participants | 91.2, 91.0 | 81.5, 84.8, 83.4 | 9.1 |\n| Random windows, 5 participants | random windows | 94.3, 94.6 | 62.2, 82.3, 83.0 | 20.0 |\n| Random windows, 5 participants, smaller training set | random windows | 93.3, 93.6 | 87.4, 87.3, 88.0 | 20.0 |\n| Held-out run, 5 participants | one whole run per participant | 37.1, 39.2 | 29.4, 31.1, 30.8 | 20.0 |"
+  "text": "| Split | Test data | PointMLP (authors' model) | PointNet | Chance |\n|---|---|---|---|---|\n| Released (shuffled windows) | random windows, 11 participants | 91.2, 91.0 | 85.2, 86.3, 86.7, 86.3, 86.9 | 9.1 |\n| Random windows, 5 participants | random windows | 94.3, 94.6 | 89.6, 89.9, 90.9, 89.4, 88.6 | 20.0 |\n| Random windows, 5 participants, smaller training set | random windows | 93.3, 93.6 | 89.9, 90.5, 90.7, 90.6, 90.4 | 20.0 |\n| Held-out run, 5 participants | one whole run per participant | 37.1, 39.2 | 30.5, 28.5, 31.2, 28.8, 29.7 | 20.0 |"
  },
  "table2": {
   "value": null,

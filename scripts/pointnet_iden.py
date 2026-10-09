@@ -2,7 +2,7 @@
 
 Points per frame follow the official sampling (zero-pad to 22, then a random choice of 22 without replacement); a window
 is frames i-4..i (stacks 5, as the released configs). The network is PointNet-style: a shared point MLP, max-pooled
-within each frame, the five frame codes concatenated and classified. Settings, 3 seeds each:
+within each frame, the five frame codes concatenated and classified. Eight epochs, Adam at 1e-3 with cosine decay, batch 512; settings, 5 seeds each:
   official      all 11 subjects, the released split rebuilt: frames in the identification loader's subject order,
                 windows i-4..i in that order, shuffled with seed 20, 8:1:1
   random_same5  the five subjects with several recording files, random window split 8:1:1
@@ -10,6 +10,7 @@ within each frame, the five frame codes concatenated and classified. Settings, 3
   sessions_out  the same five subjects, the last recording file of each held out for testing (with per-subject accuracy)
 
     python scripts/pointnet_iden.py
+    python scripts/pointnet_iden.py           (seeds 0-4 -> results/pointnet_iden.json)
 Writes results/pointnet_iden.json.
 """
 import json
@@ -74,6 +75,9 @@ def run(P, labels, tr, te, n_cls, seed, epochs=8, dev="cuda", per_class=False):
 
     m = PointNetWin(n_cls).to(dev)
     opt = torch.optim.Adam(m.parameters(), 1e-3)
+    # cosine decay to zero over all steps: with a constant rate the accuracy swung by up to 40 points between epochs,
+    # on training and test windows alike, so the last epoch was a lottery (archive-2026-10-09)
+    sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, epochs * -(-len(tr) // 512))
     trt, tet = torch.as_tensor(tr, device=dev), torch.as_tensor(te, device=dev)
     g = torch.Generator().manual_seed(seed)
     for _ in range(epochs):
@@ -85,6 +89,7 @@ def run(P, labels, tr, te, n_cls, seed, epochs=8, dev="cuda", per_class=False):
             opt.zero_grad()
             loss.backward()
             opt.step()
+            sched.step()
     m.eval()
     with torch.no_grad():
         pred = torch.cat([m(batch(tet[i:i + 4096])).argmax(1) for i in range(0, len(tet), 4096)]).cpu().numpy()
@@ -112,7 +117,7 @@ def splits(d, s):
                 "random_same5_sizematched": (tr_r[:len(tr_s)], te_r)}
 
 
-def main(seeds=(0, 1, 2)):
+def main(seeds=(0, 1, 2, 3, 4)):
     d = load()
     P = frames()
     n = len(P)
@@ -134,9 +139,10 @@ def main(seeds=(0, 1, 2)):
             res[k].append(r)
         print("seed", s, {k: res[k][-1] for k in sp}, flush=True)
     res["chance"] = {"official": 1 / 11, "five_subjects": 0.2}
-    (ROOT / "results" / "pointnet_iden.json").write_text(json.dumps(res, indent=1))
+    name = "pointnet_iden.json" if tuple(seeds) == (0, 1, 2, 3, 4) else f"pointnet_iden_s{'-'.join(map(str, seeds))}.json"
+    (ROOT / "results" / name).write_text(json.dumps(res, indent=1))
 
 
 if __name__ == "__main__":
     random.seed(0)
-    main()
+    main(tuple(int(a) for a in sys.argv[1:]) or (0, 1, 2, 3, 4))

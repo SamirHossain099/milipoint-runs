@@ -10,7 +10,8 @@ Benchmarks): what its released splits reward, and protocols that measure what th
   loader's own frame order.
 - Five participants recorded the workout in several runs. On these five, the dataset authors' PointMLP identifies
   about 94% of randomly split windows but 37-39% when one run per participant is held out (chance 20%); a
-  PointNet-style network shows the same drop, also with a training set cut to the run-disjoint size.
+  PointNet-style network shows the same drop, also with a training set cut to the run-disjoint size, and so does
+  PointMLP trained at its released settings (92.4% against 30.5%).
 - Under a shuffled split, a nearest-neighbor lookup with no learning reaches about 99% action accuracy on fifty-frame
   windows; under the released contiguous action split it reaches about 5%. The split of the MAK-GCN code is rebuilt
   too.
@@ -27,6 +28,8 @@ official repository to `<root>/code/`, and set `MILIPOINT_ROOT=<root>`.
 pip install -r requirements.txt
 python scripts/gate.py && python scripts/pointnet_iden.py
 python scripts/pointmlp_iden.py 0 && python scripts/pointmlp_iden.py 1
+python scripts/pointmlp_iden.py --released 0 sessions_out              # about 12 h each on one GPU
+python scripts/pointmlp_iden.py --released 0 random_same5_sizematched
 python scripts/action_oracle.py && python scripts/action_bug.py
 python manuscript_numbers.py && python figures.py
 python -m pytest tests -q
@@ -34,7 +37,9 @@ python -m pytest tests -q
 
 `pointmlp_iden.py` runs the authors' `pointmlp.py` unchanged; its two torch_geometric operations (farthest-point
 sampling from a random start, and k-nearest neighbors) are supplied in plain PyTorch because the compiled library has
-no build for recent PyTorch. It trains for 3 epochs at a learning rate of 1e-3, shorter than the released defaults.
+no build for recent PyTorch. Its main runs train for 3 epochs at a learning rate of 1e-3; one seed is also trained at the released defaults (100
+epochs, 1e-5, weight decay 1e-5, batch 128), with a checkpoint every epoch so an interrupted run resumes exactly.
+PointNet trains for 8 epochs with cosine decay (a constant rate made its final epoch arbitrary; see the paper).
 `results/` holds aggregated results only; the per-frame caches are rebuilt from the dataset. The claim tests and the
 packaging guard run in CI on Python 3.11 to 3.13.
 

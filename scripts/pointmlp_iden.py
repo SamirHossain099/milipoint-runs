@@ -9,8 +9,10 @@ Nothing else of torch_geometric is used by PointMLP.
 
 Input: the stacked window flattened to 110 points (5 frames x 22, official sampling). Splits as pointnet_iden.py.
 
-    python scripts/pointmlp_iden.py
-Writes results/pointmlp_iden.json.
+    python scripts/pointmlp_iden.py [seed ...]        (3 epochs, lr 1e-3, batch 256: the main runs)
+    python scripts/pointmlp_iden.py --released 0 sessions_out              (the released 100-epoch settings)
+    python scripts/pointmlp_iden.py --released 0 random_same5_sizematched
+Writes results/pointmlp_iden*.json and results/pointmlp_released_s<seed>_<split>.json.
 """
 import importlib.util
 import json
@@ -69,7 +71,13 @@ def load_pointmlp():
     return mod.PointMLP
 
 
-def run(PointMLP, P, labels, tr, te, n_cls, seed, epochs=3, dev="cuda", per_class=False):
+FAST = {"epochs": 3, "lr": 1e-3, "wd": 0.0, "bs": 256, "eta_min": 0.0, "per_step": True, "drop_last": True}
+# the released defaults (mmrnet/cli.py, session/wrapper.py): Adam, lr 1e-5, weight decay 1e-5, cosine decay to 1e-6 over
+# the epochs, batch 128, 100 epochs
+RELEASED = {"epochs": 100, "lr": 1e-5, "wd": 1e-5, "bs": 128, "eta_min": 1e-6, "per_step": False, "drop_last": False}
+
+
+def run(PointMLP, P, labels, tr, te, n_cls, seed, dev="cuda", per_class=False, cfg=FAST, report_at=(), ckpt=None):
     torch.manual_seed(seed)
     Pt = torch.as_tensor(P, device=dev)
     Y = torch.as_tensor(labels, dtype=torch.long, device=dev)
@@ -81,26 +89,57 @@ def run(PointMLP, P, labels, tr, te, n_cls, seed, epochs=3, dev="cuda", per_clas
         w[src < 0] = 0
         return w.reshape(len(idx), S * K, 3)
 
+    def evaluate():
+        m.eval()
+        with torch.no_grad():
+            pred = torch.cat([m(batch(tet[i:i + 2048])).argmax(1) for i in range(0, len(tet), 2048)]).cpu().numpy()
+        return score(pred, labels[te], per_class)
+
     m = PointMLP({"num_classes": n_cls, "max_points": K, "stacks": S}).to(dev)
-    opt = torch.optim.Adam(m.parameters(), 1e-3)
-    steps = epochs * ((len(tr) + 255) // 256)
-    sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, steps)
+    opt = torch.optim.Adam(m.parameters(), cfg["lr"], weight_decay=cfg["wd"])
+    bs = cfg["bs"]
+    per_epoch = (len(tr) // bs) if cfg["drop_last"] else -(-len(tr) // bs)
+    t_max = cfg["epochs"] * -(-len(tr) // bs) if cfg["per_step"] else cfg["epochs"]   # as the original per-step schedule
+    sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, t_max, eta_min=cfg["eta_min"])
     trt, tet = torch.as_tensor(tr, device=dev), torch.as_tensor(te, device=dev)
     g = torch.Generator().manual_seed(seed)
-    for _ in range(epochs):
+    trace, start = {}, 1
+    if ckpt is not None and ckpt.exists():                 # resume after an interruption
+        c = torch.load(ckpt, map_location=dev, weights_only=False)
+        m.load_state_dict(c["model"])
+        opt.load_state_dict(c["opt"])
+        sched.load_state_dict(c["sched"])
+        g.set_state(c["gen"].cpu())
+        torch.set_rng_state(c["rng"].cpu())
+        torch.cuda.set_rng_state(c["cuda_rng"].cpu())
+        trace, start = c["trace"], c["epoch"] + 1
+        print(f"  resumed after epoch {c['epoch']}", flush=True)
+    t_ep = time.time()
+    for ep in range(start, cfg["epochs"] + 1):
         m.train()
         perm = trt[torch.randperm(len(trt), generator=g).to(dev)]
-        for i in range(0, len(perm) - 255, 256):
-            j = perm[i:i + 256]
+        for i in range(0, per_epoch * bs, bs):
+            j = perm[i:i + bs]
             loss = nn.functional.cross_entropy(m(batch(j)), Y[j])
             opt.zero_grad()
             loss.backward()
             opt.step()
+            if cfg["per_step"]:
+                sched.step()
+        if not cfg["per_step"]:
             sched.step()
-    m.eval()
-    with torch.no_grad():
-        pred = torch.cat([m(batch(tet[i:i + 2048])).argmax(1) for i in range(0, len(tet), 2048)]).cpu().numpy()
-    return score(pred, labels[te], per_class)
+        if ep in report_at:                              # trajectory only; the result is the last epoch, fixed in advance
+            r = evaluate()
+            trace[ep] = r[0] if per_class else r
+            print(f"  epoch {ep}: {trace[ep]:.4f}", flush=True)
+        if ckpt is not None:
+            torch.save({"model": m.state_dict(), "opt": opt.state_dict(), "sched": sched.state_dict(),
+                        "gen": g.get_state(), "rng": torch.get_rng_state(), "cuda_rng": torch.cuda.get_rng_state(),
+                        "trace": trace, "epoch": ep}, ckpt)
+            print(f"  epoch {ep} done, {time.time() - t_ep:.0f} s", flush=True)
+            t_ep = time.time()
+    out = evaluate()
+    return (out, trace) if report_at else out
 
 
 def main(seeds=(0,)):
@@ -129,5 +168,26 @@ def main(seeds=(0,)):
     (ROOT / "results" / name).write_text(json.dumps(res, indent=1))
 
 
+def released(seed=0, split="sessions_out"):
+    """One seed at the released training settings on one split (run-disjoint, or random windows with the same
+    training size); the two splits run as separate processes and write separate files."""
+    PointMLP = load_pointmlp()
+    d = load()
+    P = frames()
+    y5, sp = splits(d, seed)
+    t0 = time.time()
+    a, b = sp[split]
+    ckpt = ROOT / "results" / f"pointmlp_released_s{seed}_{split}.ckpt"     # local only, for resuming
+    (acc, pc), trace = run(PointMLP, P, y5, a, b, 5, seed, per_class=True, cfg=RELEASED, report_at=(3, 10, 25, 50, 75),
+                           ckpt=ckpt)
+    res = {"settings": RELEASED, "seed": seed, "split": split, "acc": acc, "per_subject": pc, "trace": trace,
+           "seconds": round(time.time() - t0)}
+    print(split, acc, f"{time.time() - t0:.0f}s", flush=True)
+    (ROOT / "results" / f"pointmlp_released_s{seed}_{split}.json").write_text(json.dumps(res, indent=1))
+
+
 if __name__ == "__main__":
-    main(tuple(int(s) for s in sys.argv[1:]) or (0,))
+    if sys.argv[1:2] == ["--released"]:
+        released(int(sys.argv[2]), sys.argv[3])
+    else:
+        main(tuple(int(s) for s in sys.argv[1:]) or (0,))

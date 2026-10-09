@@ -12,7 +12,7 @@ FORBIDDEN_NAMES = {"CLAUDE.md", "PLAN.md", "FINDINGS.md", "CORRECTIONS.md", "PAP
                    "render_manuscript.py", "test_manuscript.py", "zotero_keys.json", "references.bib",
                    "references.ris", "references-missing.ris", "stage_public_repo.py"}
 FORBIDDEN_DIRS = {"submission", "public-repo", "src"}               # src holds the manuscript tooling
-FORBIDDEN_SUFFIX = (".npz", ".npy", ".pt", ".mat", ".docx", ".pdf")
+FORBIDDEN_SUFFIX = (".npz", ".npy", ".pt", ".ckpt", ".mat", ".docx", ".pdf")
 FORBIDDEN_PREFIX = ("make_docx", "make_refs", "sync_zotero", "fetch_refs", "prose_scan", "register_scan")
 EM, EN = chr(0x2014), chr(0x2013)
 

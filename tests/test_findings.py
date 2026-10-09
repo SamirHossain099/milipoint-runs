@@ -3,6 +3,7 @@ import json
 import os
 from pathlib import Path
 
+import numpy as np
 import pytest
 
 R = Path(os.environ.get("RESULTS_DIR", Path(__file__).resolve().parents[1] / "results"))
@@ -77,6 +78,23 @@ def test_participant_2_held_out_run_is_almost_never_recognised():
             assert per_run["2"] < 0.01, name                      # label 2 = participant 2 (sorted MULTI keys)
 
 
-def test_first_pointnet_random_run_is_the_poorly_trained_one():
+def test_pointnet_is_stable_across_five_seeds():
     p = load("pointnet_iden.json")
-    assert p["random_same5"][0] < p["random_same5_sizematched"][0] - 0.2 and min(p["random_same5"][1:]) > 0.8
+    for k in ("official", "random_same5", "random_same5_sizematched", "sessions_out"):
+        assert len(p[k]) == 5 and max(p[k]) - min(p[k]) < 0.05, k     # "at most a few points between seeds"
+    assert max(p["sessions_out"]) < 0.35 < 0.85 < min(p["random_same5"])
+
+
+def test_every_held_out_run_falls_well_below_random_windows():
+    for names in (("pointnet_iden.json",), ("pointmlp_iden.json", "pointmlp_iden_s1.json")):
+        rs = [load(n) for n in names]
+        per = [d for r in rs for d in r["sessions_out_per_subject"]]
+        best_run = max(float(np.mean([d[c] for d in per])) for c in per[0])
+        rand = float(np.mean([v for r in rs for v in r["random_same5_sizematched"]]))
+        assert rand - best_run > 0.10, names
+
+
+def test_released_settings_pointmlp_still_collapses():
+    a, b = load("pointmlp_released_s0_sessions_out.json"), load("pointmlp_released_s0_random_same5_sizematched.json")
+    assert a["settings"]["epochs"] == 100 and a["settings"]["lr"] == 1e-5
+    assert b["acc"] - a["acc"] > 0.3
