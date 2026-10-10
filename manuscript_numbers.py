@@ -93,7 +93,7 @@ def main():
         put(f"{m}_run_lo", max(mean - h, 0.0), pct(max(mean - h, 0.0), 0))
         put(f"{m}_run_hi", mean + h, pct(mean + h, 0))
     gaps = [float(np.mean(r["random_same5_sizematched"])) - max(per_run(r).values()) for r in (pm, pn)]
-    put("gap_min", min(gaps), pct(min(gaps), 0))
+    put("gap_min", min(gaps), str(int(np.floor(100 * min(gaps)))))      # "at least": round down
     put("pm_gap_pub", pm["published_pointmlp_iden"] / 100 - min(pm["official"]),
         pct(pm["published_pointmlp_iden"] / 100 - min(pm["official"]), 0))
     put("pm_drop", float(np.mean(pm["random_same5_sizematched"]) - np.mean(pm["sessions_out"])),
